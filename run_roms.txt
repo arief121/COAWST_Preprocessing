@@ -1,3 +1,8 @@
+%% ========================================= Instalasi ============================================ %%
+
+dapat merujuk pada github berikut
+https://github.com/hanggoro-litbang/training-coawst/blob/main/instalasi/07roms%20standalone
+
 %% ========================================= Pre-Processing ============================================ %%
 
 Berikut adalah langkah-langkah yang dalam pre-processing data input ROMS. 
@@ -8,27 +13,29 @@ bisa langsung tulis di issues :)
 
 1) Batimetri
 
-	a. BATNAS
-	batimetri lokal dari BIG, Resolusi spasial data BATNAS adalah 6arc-second dengan menggunakan datum MSL
-	dapat di download dimari >> https://tanahair.indonesia.go.id/demnas/#/batnas
+a. BATNAS
+batimetri lokal dari BIG, Resolusi spasial data BATNAS adalah 6arc-second dengan menggunakan datum MSL
+dapat di download dimari >> https://tanahair.indonesia.go.id/demnas/#/batnas
 
-	b. GEBCO
-	global terrain model for ocean and land, providing elevation data, in meters, on a 15 arc-second interval grid.
-	dapat di download dimari >> https://download.gebco.net/
+b. GEBCO
+global terrain model for ocean and land, providing elevation data, in meters, on a 15 arc-second interval grid.
+dapat di download dimari >> https://download.gebco.net/
 
-	c. ETOPO
-	The ETOPO Global Relief Model integrates topography, bathymetry, and shoreline data from regional and global datasets
-	dapat di download dimari >> https://www.ncei.noaa.gov/maps/grid-extract/
+c. ETOPO
+The ETOPO Global Relief Model integrates topography, bathymetry, and shoreline data from regional and global datasets
+dapat di download dimari >> https://www.ncei.noaa.gov/maps/grid-extract/
+data yang digunakan harus dalam format .nc ;  jika tidak, harus dikonversi dulu ke format .nc 
 
-	* data yang digunakan harus dalam format .nc ;  jika tidak, harus dikonversi dulu ke format .nc 
-	* data batimetri dapat diakses:
-		/mnt-storage1/TRAINING/script/matlab/ROMS/1_batimetri
-	* untuk unduh data dari server ke local
-	  pada mobaxterm, buka terminal local, lalu pindah ke direktori untuk menyimpan data batimetri
-		cd /mnt/c/Arief/ROMS/Modul_COAWST/ROMS/1_batimetri
-		scp -P 2022 coawst@182.16.251.41:/mnt-storage1/TRAINING/script/matlab/ROMS/1_batimetri/* .
+data batimetri dapat diakses:
+/mnt-storage1/TRAINING/script/matlab/ROMS/1_batimetri
 
+untuk unduh data dari server ke local
+pada mobaxterm, buka terminal local, lalu pindah ke direktori untuk menyimpan data batimetri
+$>>
+cd /mnt/c/Arief/ROMS/Modul_COAWST/ROMS/1_batimetri
+scp -P 2022 coawst@182.16.251.41:/mnt-storage1/TRAINING/script/matlab/ROMS/1_batimetri/* .
 scp -r -P 2022 {username}@182.16.251.41:/mnt-storage1/TRAINING/script/matlab/ROMS/* .
+$>>
 
 2) Grid
 
