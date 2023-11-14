@@ -442,6 +442,8 @@ export MCT_INCDIR=${HOME}/COAWST/MCT-LIB/include
 export MCT_LIBDIR=${HOME}/COAWST/MCT-LIB/lib
 script build.log
 ./coawst.bash -j 10
+Enter selection [1-75] : 34 [dmpar]
+Compile for nesting? (1=basic, 2=preset moves, 3=vortex following) [default 1]: 1
 
 	
 		cp -f /mnt-storage1/TRAINING/script/matlab/WRF/wrflowinp_d01 .
