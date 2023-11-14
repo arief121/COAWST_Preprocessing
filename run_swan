@@ -1,0 +1,7 @@
+Parameter
+ugrd10m ** 10 m above ground u-component of wind [m/s]
+vgrd10m ** 10 m above ground v-component of wind [m/s]
+mwd ** Mean wave direction [deg]
+mwp ** Mean wave period [s] 
+pp1d ** Peak wave period [s]
+swh ** Significant height of combined wind waves and swell [m]
