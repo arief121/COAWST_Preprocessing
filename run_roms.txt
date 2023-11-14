@@ -93,7 +93,20 @@ $>>
 	a. HYCOM
 	membuat file initial, boundary dan climatology untuk roms menggunakan data HYCOM 
 	script yang digunakan >> roms_master_climatology_coawst_mw.m (by JC Warner)
-	source utamanya bisa download disini >> https://github.com/DOI-USGS/COAWST 
+	source utamanya bisa download disini >> https://github.com/DOI-USGS/COAWST
+	
+	Parameter:
+	nc{'tau'}.long_name = ncchar(''Tau'');
+	nc{'depth'}.long_name = ncchar(''Depth'');
+	nc{'surf_el'}.long_name = ncchar(''Water Surface Elevation'');
+	nc{'water_temp'}.long_name = ncchar(''Water Temperature'');
+	nc{'water_temp_bottom'}.long_name = ncchar(''Water Temperature'');
+	nc{'salinity'}.long_name = ncchar(''Salinity'');
+	nc{'salinity_bottom'}.long_name = ncchar(''Salinity'');
+	nc{'water_u'}.long_name = ncchar(''Eastward Water Velocity'');
+	nc{'water_u_bottom'}.long_name = ncchar(''Eastward Water Velocity'');
+	nc{'water_v'}.long_name = ncchar(''Northward Water Velocity'');
+	nc{'water_v_bottom'}.long_name = ncchar(''Northward Water Velocity'');
 
 	* data dan script dapat diakses:
 		cd /mnt-storage1/TRAINING/script/matlab/ROMS/3_ICBC/a_hycom
@@ -190,6 +203,18 @@ $>>
 	source bisa dilihat di website
 	https://www.ncei.noaa.gov/thredds/catalog.html		>> GFS 0.5 deg data from NCEI NOAA
 	https://nomads.ncep.noaa.gov/				>> GFS 0.25 deg data from NOMADS NCEP
+
+	Parameter:
+	dlwrfsf % ** surface downward long-wave rad. flux [w/m^2]
+	ulwrfsfc % ** surface upward long-wave rad. flux [w/m^2]
+	dswrfsfc % ** surface downward short-wave radiation flux [w/m^2]
+	uswrfsfc % ** surface upward short-wave radiation flux [w/m^2]
+	prateavesfc % ** surface precipitation rate [kg/m^2/s]
+	tmp2m % ** 2 m above ground temperature [k]
+	prmslmsl % ** mean sea level pressure reduced to msl [pa]
+	rh2m % ** 2 m above ground relative humidity [%]
+	ugrd10m % ** 10 m above ground u-component of wind [m/s]
+	vgrd10m % ** 10 m above ground v-component of wind [m/s]
 
 	* data dan script dapat diakses:
 		cd /mnt-storage1/TRAINING/script/matlab/ROMS/4_surface_forcing/b_gfs
