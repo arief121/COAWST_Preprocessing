@@ -1,1 +1,82 @@
+## Running COAWST Couple Model : WRF-ROMS-SWAN ##
+
+#1 Pastikan modul yang diperlukan sudah di load
+ml list
+# jika belum ada list modul, gunakan
+ml restore coa_mod
+# pastikan modul COAWST sudah terinstal di perangkat anda
+
+#2 membuat working space
+# pastikan ada berada di $HOME
+cd $HOME # /home/[username]
+mkdir COAWST/Projects/karimun
+cd COAWST/Projects/karimun
+
+#3 copy file dari direkroti training ke working space
+cp -rf ${TRAIN_DIR}/data/karimun/* .
+
+#4 edit file coawst.bash
+gedit coawst.bash
+
+#sesuaikan dengan data berikut
+========================================================================
+124 export   COAWST_APPLICATION=COUPLING_KARIMUN
+132 export   MY_ROOT_DIR=/home/[username]/COAWST
+133 export   MY_PROJECT_DIR=/home/[username]/COAWST/Projects/karimun
+
+204  export           USE_MPI=on            # distributed-memory parallelism
+205  export        USE_MPIF90=on            # compile with mpif90 script
+206 #export         which_MPI=mpich         # compile with MPICH library
+207 #export         which_MPI=mpich2        # compile with MPICH2 library
+208  export         which_MPI=openmpi       # compile with OpenMPI library
+210 #export        USE_OpenMP=on            # shared-memory parallelism
+212 #export              FORT=ifort
+213  export              FORT=gfortran
+214 #export              FORT=pgi
+216  export         USE_DEBUG=              # use Fortran debugging flags
+217  export         USE_LARGE=on            # activate 64-bit compilation
+218  export       USE_NETCDF4=on            # compile with NetCDF-4 library
+219 #export   USE_PARALLEL_IO=on            # Parallel I/O with Netcdf-4/HDF5
+
+455 #  export     MY_HEADER_DIR=${MY_PROJECT_DIR}/ROMS/Include
+456 #  export MY_ANALYTICAL_DIR=${MY_PROJECT_DIR}/ROMS/Functionals
+457    export     MY_HEADER_DIR=${MY_PROJECT_DIR}
+458    export MY_ANALYTICAL_DIR=${MY_PROJECT_DIR}
+460 # Put the binary to execute in the following directory.
+462    export            BINDIR=${MY_PROJECT_DIR}
+463 #  export            BINDIR=./
+465 # Put the f90 files in a project specific Build directory to avoid conflict
+466 # with other projects.
+468    export       SCRATCH_DIR=${MY_PROJECT_DIR}/Build
+469 #  export       SCRATCH_DIR=./Build
+
+========================================================================
+
+# save editan tersebut
+
+#5 edit file coupling_karimun.in
+gedit coupling_karimun.in
+
+#sesuaikan dengan data berikut
+========================================================================
+
+     40    NnodesATM =  2                   ! atmospheric model
+     41    NnodesWAV =  2                   ! wave model
+     42    NnodesOCN =  2                   ! ocean model
+
+     47   TI_ATM2WAV =   540.0d0              ! atmosphere to wave coupling interval
+     48   TI_ATM2OCN =   540.0d0              ! atmosphere to ocean coupling interval
+     49   TI_WAV2ATM =   540.0d0              ! wave to atmosphere coupling interval
+     50   TI_WAV2OCN =   540.0d0              ! wave to ocean coupling interval
+     51   TI_OCN2WAV =   540.0d0              ! ocean to wave coupling interval
+     52   TI_OCN2ATM =   540.0d0              ! ocean to atmosphere coupling interval
+
+     59    ATM_name = /home/[username]/COAWST/Projects/karimun/namelist.input                  ! atmospheric model
+     60    WAV_name = /home/[username]/COAWST/Projects/karimun/swan_9km.in \                   ! wave model
+     61               /home/[username]/COAWST/Projects/karimun/swan_3km.in
+     62     
+     64    OCN_name = /home/[username]/COAWST/Projects/karimun/roms_karimun.in   ! ocean model
+
+     79    SCRIP_COAWST_NAME = /home/[username]/COAWST/Projects/karimun/scrip_karimun_static.nc
+
 
