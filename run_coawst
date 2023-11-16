@@ -94,9 +94,9 @@ gedit roms_karimun.in
 85   NestLayers =  2
 89 GridsInLayer =  1 1
 
- 94           Lm == 61 84             ! Number of I-direction INTERIOR RHO-points
- 95           Mm == 56 102            ! Number of J-direction INTERIOR RHO-points
- 96            N == 20  20             ! Number of vertical levels
+ 94           Lm == 54 96             ! Number of I-direction INTERIOR RHO-points
+ 95           Mm == 37 72            ! Number of J-direction INTERIOR RHO-points
+ 96            N == 12  12             ! Number of vertical levels
 
 109       NtileI == 2                              ! I-direction partition
 110       NtileJ == 1                               ! J-direction partition
