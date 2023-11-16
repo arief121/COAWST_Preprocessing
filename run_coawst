@@ -102,16 +102,16 @@ gedit roms_karimun.in
 110       NtileJ == 1                               ! J-direction partition
 
 133    Hadvection == U3       \                     ! temperature
-134                  U3       
+134                  U3       \
 135    !
-136                  U3                            ! salinity
+136                  U3       \                    ! salinity
 137                  U3
 138    !
 139
 140    Vadvection == C4       \                     ! temperature
-141                  C4       
+141                  C4       \
 142    !
-143                  C4                             ! salinity
+143                  C4       \                     ! salinity
 144                  C4
 145    !
 
@@ -160,7 +160,7 @@ gedit roms_karimun.in
 230                     Nes     Nes     Nes     Nes 
 231    !
 
-270       NTIMES == 48000 48000 144000 ! 15 hari
+270       NTIMES == 44800 44800 44800 ! 15 hari
 271           DT == 27.0d0 27.0d0 3.0d0 ! time step
 272      NDTFAST == 30 30 30
 
@@ -193,7 +193,7 @@ gedit roms_karimun.in
 451
 452      THETA_S == 5.0d0                      ! surface stretching parameter
 453      THETA_B == 0.4d0                      ! bottom  stretching parameter
-454       TCLINE == 20.0d0                     ! critical depth (m)
+454       TCLINE == 40.0d0                     ! critical depth (m)
 
 465       DSTART =  60065.0d0 60065.0d0                     ! days
 466   TIDE_START =  60065.0d0                      ! days
@@ -329,12 +329,12 @@ gedit swan_9km.in
 
 ========================================================================
  15 NSGRIDS 2
-     18 CGRID CURVILINEAR 112 106 EXC 9.999000e+003 9.999000e+003 CIRCLE 24 0.04 1.0 28
+     18 CGRID CURVILINEAR 55 38 EXC 9.999000e+003 9.999000e+003 CIRCLE 24 0.04 1.0 28
  19 READGRID COORDINATES 1 '/home/[username]/COAWST/Projects/karimun/swan9km.grd' 3 0 0 FREE
- 22 INPGRID BOTTOM CURVILINEAR 0 0 112 106 EXC 9.999000e+003
+ 22 INPGRID BOTTOM CURVILINEAR 0 0 55 38 EXC 9.999000e+003
  23 READINP BOTTOM 1 '/home/[username]/COAWST/Projects/karimun/swan9km.bot' 3 0 FREE
  56 & This command orders SWAN to start the computation(s).
- 57 COMPUTE NONSTAT 20230501.000000 540 SEC 20230515.230000
+ 57 COMPUTE NONSTAT 20230501.000000 540 SEC 20230515.000000
 
 ========================================================================
 # save editan tersebut
@@ -344,12 +344,12 @@ gedit swan_3km.in
 
 ========================================================================
  15 NSGRIDS 2
-     18 CGRID CURVILINEAR 112 106 EXC 9.999000e+003 9.999000e+003 CIRCLE 24 0.04 1.0 28
+ 18 CGRID CURVILINEAR 97 73 EXC 9.999000e+003 9.999000e+003 CIRCLE 24 0.04 1.0 28
  19 READGRID COORDINATES 1 '/home/[username]/COAWST/Projects/karimun/swan3km.grd' 3 0 0 FREE
- 22 INPGRID BOTTOM CURVILINEAR 0 0 112 106 EXC 9.999000e+003
+ 22 INPGRID BOTTOM CURVILINEAR 0 0 97 73 EXC 9.999000e+003
  23 READINP BOTTOM 1 '/home/[username]/COAWST/Projects/karimun/swan3km.bot' 3 0 FREE
  56 & This command orders SWAN to start the computation(s).
- 57 COMPUTE NONSTAT 20230501.000000 540 SEC 20230515.230000
+ 57 COMPUTE NONSTAT 20230501.000000 540 SEC 20230515.000000
 
 ========================================================================
 # save editan tersebut
@@ -364,7 +364,7 @@ gedit run_karimun
 4 #SBATCH -o coupling_karimun.log         # Name of stdout output file (%j expands to jobId)
 5 #SBATCH -N 1                  # Total number of nodes requested
 6 #SBATCH -n 6                # Total number of mpi tasks requested
-7 #SBATCH -t 02:00:00           # Run time (hh:mm:ss) - 1.5 hours
+7 #SBATCH -t 12:00:00           # Run time (hh:mm:ss) - 1.5 hours
 8 #SBATCH -p normal             # Partition name
 9
 10 # Launch MPI-based executable
