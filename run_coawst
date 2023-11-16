@@ -328,10 +328,71 @@ gedit roms_karimun.in
 gedit swan_9km.in
 
 ========================================================================
+     15 NSGRIDS 2
+     18 CGRID CURVILINEAR 112 106 EXC 9.999000e+003 9.999000e+003 CIRCLE 24 0.04 1.0 28
+     19 READGRID COORDINATES 1 '/home/[username]/COAWST/Projects/karimun/swan9km.grd' 3 0 0 FREE
+     22 INPGRID BOTTOM CURVILINEAR 0 0 112 106 EXC 9.999000e+003
+     23 READINP BOTTOM 1 '/home/[username]/COAWST/Projects/karimun/swan9km.bot' 3 0 FREE
+     56 & This command orders SWAN to start the computation(s).
+     57 COMPUTE NONSTAT 20230501.000000 540 SEC 20230515.230000
 
+========================================================================
+# save editan tersebut
 
+#8 edit file swan_3km.in
+gedit swan_3km.in
 
+========================================================================
+     15 NSGRIDS 2
+     18 CGRID CURVILINEAR 112 106 EXC 9.999000e+003 9.999000e+003 CIRCLE 24 0.04 1.0 28
+     19 READGRID COORDINATES 1 '/home/[username]/COAWST/Projects/karimun/swan3km.grd' 3 0 0 FREE
+     22 INPGRID BOTTOM CURVILINEAR 0 0 112 106 EXC 9.999000e+003
+     23 READINP BOTTOM 1 '/home/[username]/COAWST/Projects/karimun/swan3km.bot' 3 0 FREE
+     56 & This command orders SWAN to start the computation(s).
+     57 COMPUTE NONSTAT 20230501.000000 540 SEC 20230515.230000
 
+========================================================================
+# save editan tersebut
+
+#9 edit file run_karimun
+gedit run_karimun
+
+========================================================================
+      1 #!/bin/bash
+      2
+      3 #SBATCH -J coupling_karimun               # Job name
+      4 #SBATCH -o coupling_karimun.log         # Name of stdout output file (%j expands to jobId)
+      5 #SBATCH -N 1                  # Total number of nodes requested
+      6 #SBATCH -n 6                # Total number of mpi tasks requested
+      7 #SBATCH -t 02:00:00           # Run time (hh:mm:ss) - 1.5 hours
+      8 #SBATCH -p normal             # Partition name
+      9
+     10 # Launch MPI-based executable
+     11 mpirun ./coawstM coupling_karimun.in > coupling_karimun.out
+
+========================================================================
+# save editan tersebut
+
+#10 compile coawst.bash
+
+export NETCDF=/opt/ohpc/pub/apps/netcdf-4.7.3
+export WRF_EM_CORE=1
+export NETCDF4=1
+export HDF5=/opt/ohpc/pub/apps/hdf5-1.10.4
+export jasper=/opt/ohpc/pub/apps/jasper-1.900.1
+export JASPERLIB=/opt/ohpc/pub/apps/jasper-1.900.1/lib
+export JASPERINC=/opt/ohpc/pub/apps/jasper-1.900.1/include
+export WRF_DA_CORE=0
+export WRFIO_NCD_LARGE_FILE_SUPPORT=1
+export MCT_INCDIR=${HOME}/COAWST/MCT-LIB/include
+export MCT_LIBDIR=${HOME}/COAWST/MCT-LIB/lib
+script build.log
+./coawst.bash -j 10
+Enter selection [1-75] : 34 [dmpar]
+Compile for nesting? (1=basic, 2=preset moves, 3=vortex following) [default 1]: 1
+
+#11 compile run_karimun
+sbatch run_karimun
 
 
 
