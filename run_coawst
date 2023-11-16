@@ -392,6 +392,9 @@ Enter selection [1-75] : 34 [dmpar]
 Compile for nesting? (1=basic, 2=preset moves, 3=vortex following) [default 1]: 1
 
 #11 compile run_karimun
+ln -sf ../../WRF/run/RRTM* .
+ln -sf ../../WRF/run/ozone* .
+ln -sf ../../WRF/run/*.TBL .
 sbatch run_karimun
 
 #12 review hasil menggunakan ncview
