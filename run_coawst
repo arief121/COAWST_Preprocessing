@@ -306,8 +306,8 @@ gedit roms_karimun.in
 1056      RSTNAME == roms_kraimun_rst9km.nc \
 1057                 roms_karimun_rst3km.nc
 1058      !
-1059      HISNAME == roms_selsunda_his9km.nc \
-1060                 roms_selsunda_his3km.nc
+1059      HISNAME == roms_karimun_his9km.nc \
+1060                 roms_karimun_his3km.nc
 1061      !
 1062      QCKNAME == roms_qck.nc
 1063      TLMNAME == roms_tlm.nc
