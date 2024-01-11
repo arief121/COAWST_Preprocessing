@@ -1,1 +1,92 @@
+Berikut adalah langkah-langkah yang dalam pre-processing data input ROMS. 
+Jika ada yang kurang jelas atau ada yang ingin ditanyakan atau menyampaikan kritik dan masukan
+bisa langsung tulis di issues :)
+
+## Happy Modeling ##
+
+Preprocessing atau persiapan data input model ROMS kali ini akan menggunakan program MATLAB.
+sebelum itu, buatlah direktori/folder sebagai tempat untuk meletakkan file2 nantinya dengan susunan sebagai berikut:
+
+main directory  /  1_batimetri
+                /  2_grid
+                /  3_ICBC
+                /  4_surface_forcing
+                /  5_tide
+                /  99_pendukung
+
+1) Pembuatan Domain Model
+1.1) unduh Batimetri
+
+data batimetri digunakan sebagai data input kedalaman pada domain model yang akan dibuat. berikut adalah beberapa source data batimetri yang dapat digunakan:
+
+a. BATNAS
+batimetri lokal dari BIG, Resolusi spasial data BATNAS adalah 6arc-second dengan menggunakan datum MSL
+dapat di download dimari >> https://tanahair.indonesia.go.id/demnas/#/batnas
+
+b. GEBCO
+global terrain model for ocean and land, providing elevation data, in meters, on a 15 arc-second interval grid.
+dapat di download dimari >> https://download.gebco.net/
+
+c. ETOPO
+The ETOPO Global Relief Model integrates topography, bathymetry, and shoreline data from regional and global datasets
+dapat di download dimari >> https://www.ncei.noaa.gov/maps/grid-extract/
+data yang digunakan harus dalam format .nc ;  jika tidak, harus dikonversi dulu ke format .nc 
+
+data batimetri yang sudah di download, diletakkan ke dalam 
+main directory  /  1_batimetri
+
+1.2) membuat grid domain model ROMS
+membuat grid domain roms dengan script By Haibo Zong, Fathom Science yang telah disesuaikan/diedit kembali.
+pastikan script matlab generate_grid_sip.m sudah dicopy ke 
+main directory  /  2_grid
+
+buka matlab > generate_grid_sip.m
+
+sesuaikan bagian berikut:
+
+%% ========= bagian yang diubah ========= (0)
+% add your mtool path
+addpath(genpath('../main_directory/99_pendukung/libs_matlab'))
+
+%% ========= bagian yang diubah ========= (1)
+% set range of lon and lat (batas lon dan lat domain model yang akan
+% disimulasikan)
+lonl = 108.6; % west 
+lonr = 113.; % east
+latd = -6.5; % south
+latu = -3.5; % north
+
+%% ========= bagian yang diubah ========= (2)
+% resolusi model (dx=dy)
+resolusi = 3; %(dalam km)
+
+%% ========= bagian yang diubah ========= (3)
+% input file batimetri 
+gebcofn = '../1_batimetri/file_batimetri.nc';
+
+%% ========= bagian yang diubah ========= (4)
+ARVD.N=12; % jumlah layer kedalaman 
+
+%% ========= bagian yang diubah ========= (5)
+% nama output file domain
+save roms_grid.mat rho
+mat2roms_rps('roms_grid.mat','roms_grid.nc')
+
+ ============ Selesai ===============
+
+output yang digunakan adalah yang berformat nc (roms_grid.nc)
+
+<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+2) Pembuatan input Initial Condition dan Boundary Condition (ICBC)
+
+
+
+
+
+
+
+
+
+
 
