@@ -14,6 +14,8 @@ main directory  /  1_batimetri
                 /  5_tide
                 /  99_pendukung
 
+* file pendukung dapat diunduh disini: https://github.com/DOI-USGS/COAWST/tree/main/Tools/mfiles
+
 1) Pembuatan Domain Model
 1.1) unduh Batimetri
 
@@ -80,13 +82,72 @@ output yang digunakan adalah yang berformat nc (roms_grid.nc)
 
 2) Pembuatan input Initial Condition dan Boundary Condition (ICBC)
 
+data initial dan boundary condition akan dibuat menggunakan data dari model global HYbrid Coordinate Ocean Model (HYCOM)
+untuk mengecek ketersediaan data yang dibutuhkan, bisa cek di web berikut: https://tds.hycom.org/thredds/catalog.html
 
+script yang digunakan >> roms_master_climatology_coawst_mw_sip.m (by JC Warner dan dimodifikasi sesuai kebutuhan)
+source utamanya bisa download disini >> https://github.com/DOI-USGS/COAWST
 
+Parameter yang akan digunakan:
+nc{'tau'}.long_name = ncchar(''Tau'');
+nc{'depth'}.long_name = ncchar(''Depth'');
+nc{'surf_el'}.long_name = ncchar(''Water Surface Elevation'');
+nc{'water_temp'}.long_name = ncchar(''Water Temperature'');
+nc{'water_temp_bottom'}.long_name = ncchar(''Water Temperature'');
+nc{'salinity'}.long_name = ncchar(''Salinity'');
+nc{'salinity_bottom'}.long_name = ncchar(''Salinity'');
+nc{'water_u'}.long_name = ncchar(''Eastward Water Velocity'');
+nc{'water_u_bottom'}.long_name = ncchar(''Eastward Water Velocity'');
+nc{'water_v'}.long_name = ncchar(''Northward Water Velocity'');
+nc{'water_v_bottom'}.long_name = ncchar(''Northward Water Velocity'');
 
+pastikan script matlab roms_master_climatology_coawst_mw_sip.m sudah dicopy ke 
+main directory  /  3_ICBC
 
+buka matlab > roms_master_climatology_coawst_mw_sip.m
 
+sesuaikan bagian berikut:
 
+%% ========= bagian yang diubah ========= (0)
+% add your mtool path
+addpath(genpath('../../ROMS/99_pendukung/libs_matlab'))
 
+%% ========= bagian yang diubah ========= (1)
+
+% (1) Enter start date (T1) and number of days to get climatology data 
+T1 = datenum(2023,05,01,00,0,0); %tanggal/waktu mulai simulasi (usahakan waktunya sama dengan atau lebih dahulu dari waktu simulasi model)
+
+%number of days and frequency to create climatology files for
+numdays = 61; % jumlah hari simulasi (1 hari berarti dari T1 - hari terakhir dari T1, dst)
+dayFrequency = 5; % frequency to create climatology files
+
+% (2) Enter URL of the HYCOM catalog for the requested time, T1
+%     see http://tds.hycom.org/thredds/catalog.html
+url = 'https://tds.hycom.org/thredds/dodsC/GLBy0.08/expt_93.0'; % untuk Hindcast Data: Dec-04-2018 to Present *3-hourly*
+%url = 'https://tds.hycom.org/thredds/dodsC/GLBy0.08/expt_93.0/FMRC/runs/GLBy0.08_930_FMRC_RUN_2024-01-11T12:00:00Z' % untuk data forecast, bisa cek ketersediaan data di https://tds.hycom.org/thredds/catalog/GLBy0.08/expt_93.0/FMRC/runs/catalog.html
+
+% (3) Enter grid vertical coordinate parameters --These need to be consistent with the ROMS setup. 
+theta_s     =  5.0; % lihat https://www.myroms.org/wiki/Vertical_S-coordinate
+theta_b     =  0.4; % lihat https://www.myroms.org/wiki/Vertical_S-coordinate
+Tcline      = 40.0; % perkiraan kedalaman kritis atau lapisan bawah termoklin
+N           = 12; % jumlah banyak level/layer kedalaman
+Vtransform  =  2; % lihat https://www.myroms.org/wiki/Vertical_S-coordinate
+Vstretching =  4; % lihat https://www.myroms.org/wiki/Vertical_S-coordinate
+
+%% ========= bagian yang diubah ========= (2)
+% membuat direktori file output 
+if ~exist('nama_direktori', 'dir')
+  mkdir('nama_direktori');
+end
+cd('path to nama_direktori');
+wdr = pwd;
+% path to file domain roms yang telah dibuat menggunakan generate_grid_sip.m
+modelgrid = '../../2_grid/b_generate_grid_m/roms_9km.nc';
+
+%nama output file dan yang akan digunakan sebagai input model roms
+ini_names = 'roms_ini.nc';
+bdy_names = 'roms_bdy.nc';
+clm_names = 'roms_clm.nc';
 
 
 
