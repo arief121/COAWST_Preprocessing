@@ -16,6 +16,8 @@ main directory  /  1_batimetri
 
 * file pendukung dapat diunduh disini: https://github.com/DOI-USGS/COAWST/tree/main/Tools/mfiles
 
+<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
 1) Pembuatan Domain Model
 1.1) unduh Batimetri
 
@@ -51,8 +53,7 @@ sesuaikan bagian berikut:
 addpath(genpath('../main_directory/99_pendukung/libs_matlab'))
 
 %% ========= bagian yang diubah ========= (1)
-% set range of lon and lat (batas lon dan lat domain model yang akan
-% disimulasikan)
+% set range of lon and lat (batas lon dan lat domain model yang akan disimulasikan)
 lonl = 108.6; % west 
 lonr = 113.; % east
 latd = -6.5; % south
@@ -149,5 +150,15 @@ ini_names = 'roms_ini.nc';
 bdy_names = 'roms_bdy.nc';
 clm_names = 'roms_clm.nc';
 
+ ============ Selesai ===============
 
+output yang digunakan adalah yang berformat nc (roms_ini.nc, roms_bdy.nc, roms_clm.nc)
 
+<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+3) Pembuatan input Initial Condition dan Boundary Condition (ICBC)
+
+data surface forcing akan dibuat menggunakan data dari:
+a. dataset ECMWF-ERA5.
+download data ERA5 hourly data on single levels from 1940 to present (harus register terlebih dahulu)
+https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-single-levels?tab=form  
