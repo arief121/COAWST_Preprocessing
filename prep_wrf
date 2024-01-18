@@ -1,1 +1,54 @@
+Berikut adalah langkah-langkah yang dalam pre-processing data input WRF. 
+Tulisan yang terlampir disini merupakan tulisan dari github Pak Wido Hanggoro yang saya coba tuliskan kembali.
+( https://github.com/hanggoro-litbang/training-coawst/blob/main/running/)
+
+Jika ada yang kurang jelas atau ada yang ingin ditanyakan atau menyampaikan kritik dan masukan
+bisa langsung tulis di issues :)
+
+## Happy Modeling ##
+
+Preprocessing atau persiapan data input model WRF kali ini akan dilakukan di server/Linux.
+sebelum itu, buatlah direktori/folder sebagai tempat untuk meletakkan file2 nantinya dengan susunan sebagai berikut:
+
+main directory  /  1_data
+                /  2_geogrid
+                /  3_ungrib
+                /  4_metgrid
+                /  5_wrf
+
+<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+1) Pembuatan Domain Model
+
+* buka web https://jiririchter.github.io/WRFDomainWizard/
+* pada toolbar sebelah kiri, pilih toolbar wps (kedua dari atas) 
+* tentukan area yang menjadi wilayah simulasi (drag langsung di peta)
+* ubah nilai dx dan dy sesuai yang diinginkan (dx=dy, satuan dalam meter)
+* save, dan akan keluar namelist.wps (akan digunakan di langkah selanjutnya)
+
+2) Download data GFS
+
+download data GFS menggunakan script download_gfs0.25.sh, sesuaikan bagian berikut:
+
+# input waktu awal simulasi
+yyyy1=2023
+mm1=11
+dd1=01
+cc=00
+lengthhour=120 # hari simulasi * 24
+step=3
+##########
+
+source=ems # gfilter khusus data forecast; nccf yang lain ada data analisisnya;
+
+########## Domain Selection for grib filter #############
+ll=95   #left
+rl=115  #right
+tl=5    #top
+bl=-15  #bottom
+###########
+
+3) Run geogrid
+
+
 
