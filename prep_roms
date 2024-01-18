@@ -143,7 +143,7 @@ end
 cd('path to nama_direktori');
 wdr = pwd;
 % path to file domain roms yang telah dibuat menggunakan generate_grid_sip.m
-modelgrid = '../../2_grid/b_generate_grid_m/roms_9km.nc';
+modelgrid = '../2_grid/roms_grid.nc';
 
 %nama output file dan yang akan digunakan sebagai input model roms
 ini_names = 'roms_ini.nc';
