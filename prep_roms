@@ -161,4 +161,140 @@ output yang digunakan adalah yang berformat nc (roms_ini.nc, roms_bdy.nc, roms_c
 data surface forcing akan dibuat menggunakan data dari:
 a. dataset ECMWF-ERA5.
 download data ERA5 hourly data on single levels from 1940 to present (harus register terlebih dahulu)
-https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-single-levels?tab=form  
+https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-single-levels?tab=form
+parameter yang di download adalah:
+            '10m_u_component_of_wind', '10m_v_component_of_wind', '2m_dewpoint_temperature',
+            '2m_temperature', 'eastward_turbulent_surface_stress', 'evaporation',
+            'mean_sea_level_pressure', 'northward_turbulent_surface_stress', 'skin_temperature',
+            'surface_latent_heat_flux', 'surface_net_solar_radiation', 'surface_net_thermal_radiation',
+            'surface_sensible_heat_flux', 'surface_thermal_radiation_downwards', 'total_cloud_cover',
+            'total_precipitation',
+
+pastikan script matlab era5_2_roms_sip.m dan data dari ERA5 sudah dicopy ke 
+main directory  /  4_surface_forcing
+
+buka matlab > era5_2_roms_sip.m
+
+sesuaikan bagian berikut:
+
+%% ========= bagian yang diubah ========= (1)
+% Base date for ROMS forcing files: "days since 2000-01-01 00:00:00".
+% harus konsisten dengan ddate yang digunakan pada saat menghitung kompunen
+% pasut dan saat mengedit file roms.in
+mybasedate = datenum(1858,11,17,0,0,0);
+%% =======================================
+
+%% ========= bagian yang diubah ========= (2)
+% Set field element in structure F to process.
+doFields = [5 6 7 9 13 14 15 16]; % If the ROMS option BULK_FLUXES is ACTIVATED, process elements 5:16
+                                  % swrad Uwind Vwind lwrad_down rain Pair Tair Qair    
+%doFields = [1 2 3 4 5];          % If the ROMS option BULK_FLUXES is NOT activatived, process elements 1:5
+                                  % sustr svstr shflux swflux swrad
+%% =======================================
+
+%% ========= bagian yang diubah ========= (3)
+% batas lan lot data era5 yang digunakan
+spherical = true;                       % Spherical switch
+LonMin    = 89;                     % GOM left-bottom longitude
+LonMax    = 146;                      % GOM right-top   longitude
+LatMin    = -16;                       % GOM left-bottom latitude
+LatMax    = 16;                       % GOM right-top   latitude
+FlipLat   = true;                       % Flip data in ERA NetCDF files
+%% =======================================
+
+%% ========= bagian yang diubah ========= (4)                                        
+StrDay    = datenum('01-Sep-2023');     % tanggal awal data era5
+EndDay    = datenum('13-Sep-2023');     % tanggal akhir data era5
+%% =======================================
+
+%% ========= bagian yang diubah ========= (5) 
+% nama file era5
+InpFile  = fullfile(Dir, 'sunda_era5_sept_2023.nc');
+%% =======================================
+
+ ============ Selesai ===============
+
+
+b. dataset GFS.
+
+membuat file surface forcing dari dataset GFS.
+source bisa dilihat di website
+https://www.ncei.noaa.gov/thredds/catalog.html >> GFS 0.5 deg data from NCEI NOAA (analisis dan forecast)
+https://nomads.ncep.noaa.gov/ >> GFS 0.25 deg data from NOMADS NCEP (forecast)
+
+Parameter:
+dlwrfsf % ** surface downward long-wave rad. flux [w/m^2]
+ulwrfsfc % ** surface upward long-wave rad. flux [w/m^2]
+dswrfsfc % ** surface downward short-wave radiation flux [w/m^2]
+uswrfsfc % ** surface upward short-wave radiation flux [w/m^2]
+prateavesfc % ** surface precipitation rate [kg/m^2/s]
+tmp2m % ** 2 m above ground temperature [k]
+prmslmsl % ** mean sea level pressure reduced to msl [pa]
+rh2m % ** 2 m above ground relative humidity [%]
+ugrd10m % ** 10 m above ground u-component of wind [m/s]
+vgrd10m % ** 10 m above ground v-component of wind [m/s]
+
+pastikan script matlab ncei_2roms2_sip.m dan data dari ERA5 sudah dicopy ke 
+main directory  /  4_surface_forcing
+
+buka matlab > ncei_2roms2_sip.m
+
+sesuaikan bagian berikut:
+
+%% ========= bagian yang diubah ========= (0)
+% add your mtool path
+addpath(genpath('../../ROMS/99_pendukung/libs_matlab'))
+
+%% ===================== bagian yang diubah ============================== (1)
+% (3) Enter start and end dates
+time_start = datenum('01-May-2023'); tst = datestr(time_start,'yyyymmdd');
+time_end   = datenum('01-Jul-2023'); ten = datestr(time_end,'yyyymmdd');
+
+%% ===================== bagian yang diubah ============================== (2)
+% pilih GFS analisis (1) atau GFS forecast (2) yang akan digunakan untuk
+% membuat file input surface forcing
+
+GFS = 1;
+
+%% ===================== bagian yang diubah ============================== (3)
+% The code has been written so that longitude is in -deg E. 
+if interpto_roms_grid
+  model_grid = '../2_grid/roms_grid.nc'; % lokasi file domain grid roms
+
+%% ========= bagian yang diubah ========= (4)
+% membuat direktori file output 
+if ~exist('gfs', 'dir')
+  mkdir('gfs');
+end
+cd('gfs');
+
+============ Selesai ===============
+
+<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+4) Pembuatan input tidal forcing
+
+membuat file tidal forcing menggunakan dataset TPX0 (https://www.tpxo.net/otps)
+script yang digunakan >> TPXO2ROMS_sip.m (created by Haibo Zong)
+
+pastikan script matlab TPXO2ROMS_sip.m dan data dari TPXO sudah dicopy ke 
+main directory  /  5_tide
+
+buka matlab > TPXO2ROMS_sip.m
+
+sesuaikan bagian berikut:
+
+%% ========= bagian yang diubah ========= (0)
+TIDE_START=221;  %ROMS daynumber in ROMS *.in file (TIME_REF=-2) selisis awal simulasi dengan tanggal awal tahun simulasi
+lengthSim=10;  %estimated length of model run in days (not exact)
+t0=datenum(2022, 1, 1, 0, 0, 0); % tanggal awal tahun waktu simulasi
+fnGrid='../2_grid/roms_grid.nc'; % lokasi file domain grid roms
+fnOut=['roms_tides.nc']; % nama output file
+%% =======================================
+
+ ============ Selesai ===============
+
+
+
+
+
