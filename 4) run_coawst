@@ -8,7 +8,7 @@ ml restore coa_mod
 
 #2 membuat working space
 # pastikan ada berada di $HOME
-cd $HOME # /home/[username]
+cd $HOME  #/home/[username]
 mkdir COAWST/Projects/karimun
 cd COAWST/Projects/karimun
 
@@ -16,7 +16,7 @@ cd COAWST/Projects/karimun
 cp -rf ${TRAIN_DIR}/data/karimun/* .
 
 #4 edit file coawst.bash
-gedit coawst.bash
+vi coawst.bash
 
 #sesuaikan dengan data berikut
 ========================================================================
@@ -73,7 +73,7 @@ gedit coupling_karimun.in
 59    ATM_name = /home/[username]/COAWST/Projects/karimun/namelist.input                  ! atmospheric model
 60    WAV_name = /home/[username]/COAWST/Projects/karimun/swan_9km.in \                   ! wave model
 61               /home/[username]/COAWST/Projects/karimun/swan_3km.in
-62     
+62   
 64    OCN_name = /home/[username]/COAWST/Projects/karimun/roms_karimun.in   ! ocean model
 
 79    SCRIP_COAWST_NAME = /home/[username]/COAWST/Projects/karimun/scrip_karimun_static.nc
