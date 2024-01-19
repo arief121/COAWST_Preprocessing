@@ -20,33 +20,48 @@ main directory  /  1_data
 
 1) Pembuatan Domain Model
 
-* buka web https://jiririchter.github.io/WRFDomainWizard/
-* pada toolbar sebelah kiri, pilih toolbar wps (kedua dari atas) 
-* tentukan area yang menjadi wilayah simulasi (drag langsung di peta)
+* buka web https://jiririchter.github.io/WRFDomainWizard/, pakai tombol scroll ditahan untuk geser peta
+* pada toolbar sebelah kiri, pilih toolbar wps (kedua dari atas), pilih new
+* tentukan area yang menjadi wilayah simulasi (drag langsung di peta) minimal nilai e_we & e_sn 100x100
 * ubah nilai dx dan dy sesuai yang diinginkan (dx=dy, satuan dalam meter)
-* save, dan akan keluar namelist.wps (akan digunakan di langkah selanjutnya)
+* setiap ada nilai yang diubah, jangan lupa klik update
+* untuk menambah nesting domain, klik add nest (tombol + disebelah tulisan Grids)
+* jika sudah selesai, save, dan akan keluar namelist.wps (akan digunakan di langkah selanjutnya)
 
 2) Download data GFS
 
-download data GFS menggunakan script download_gfs0.25.sh, sesuaikan bagian berikut:
+download data GFS menggunakan script download_gfs0.25.sh
+pastikan script download_gfs0.25.sh sudah dicopy ke 
+main directory  /  1_data
+
+# buka file download_gfs0.25.sh
+vi download_gfs0.25.sh
+
+, sesuaikan bagian berikut:
 
 # input waktu awal simulasi
 yyyy1=2023
-mm1=11
+mm1=05
 dd1=01
 cc=00
-lengthhour=120 # hari simulasi * 24
+lengthhour=1440 # hari simulasi * 24
 step=3
 ##########
 
 source=ems # gfilter khusus data forecast; nccf yang lain ada data analisisnya;
 
 ########## Domain Selection for grib filter #############
-ll=95   #left
-rl=115  #right
-tl=5    #top
-bl=-15  #bottom
+# usahakan area domain data GFS yang didownload lebih besar dari domain WRF
+ll=104   #left
+rl=116  #right
+tl=1    #top
+bl=-11  #bottom
 ###########
+
+# save
+
+# run download_gfs0.25.sh
+./download_gfs0.25.sh
 
 3) Run geogrid
 
