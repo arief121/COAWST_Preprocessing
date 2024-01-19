@@ -11,10 +11,10 @@ Preprocessing atau persiapan data input model WRF kali ini akan dilakukan di ser
 sebelum itu, buatlah direktori/folder sebagai tempat untuk meletakkan file2 nantinya dengan susunan sebagai berikut:
 
 main directory  /  1_data
-                /  2_geogrid
-                /  3_ungrib
-                /  4_metgrid
-                /  5_wrf
+    /  2_geogrid
+    /  3_ungrib
+    /  4_metgrid
+    /  5_wrf
 
 <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 
@@ -65,5 +65,57 @@ bl=-11  #bottom
 
 3) Run geogrid
 
+# buka direktori 
+main directory  /  2_geogrid
+cd $HOME/maindirectory/2_geogrid
 
+# buat file dengan nama namelist.wps dan buka; copy kan namelist.wps dari domainwizard yang telah dibuat sebelumnya
+
+# buka file namelist.wps
+vi namelist.wps
+
+# copy isi file namelist.wps dari web domainwizard
+
+sesuaikan bagian berikut:
+
+1 &share
+2  wrf_core = 'ARW'
+3  max_dom  = 1                        # sesuai jumlah domain yang dibuat
+4  start_date= '2023-05-01_00:00:00'   # waktu awal sumulasi
+5  end_date = '2023-05-30_18:00:00'    # waktu akhir simulasi
+6  interval_seconds= 10800             # interval waktu data input GFS
+7  io_form_geogrid= 2                  # sesuai dengan jumlah domain
+8  debug_level    = 0
+9 /
+10
+11 &geogrid
+12  parent_id= 1
+13  parent_grid_ratio    = 1
+14  i_parent_start = 1
+15  j_parent_start = 1
+16  e_we= 100
+17  e_sn= 100
+18  geog_data_res  = ''
+19  dx = 9000
+20  dy = 9000
+21  map_proj = 'lambert'
+22  ref_lat  = -5.871
+23  ref_lon  = 110.435
+24  truelat1 = -2.420
+25  truelat2 = -2.420
+26  stand_lon= 112.062
+27  geog_data_path = '/home/wrf/geog'
+28  opt_geogrid_tbl_path = '/home/wrf/RUN.TABLES'
+29 /
+30
+31 &ungrib
+32  out_format= 'WPS'
+33  prefix   = 'UNGRIB'
+34 /
+35
+36 &metgrid
+37  fg_name  = 'UNGRIB'
+38  io_form_metgrid= 2
+39  opt_metgrid_tbl_path = '/home/wrf/RUN.TABLES'
+40 /
 
