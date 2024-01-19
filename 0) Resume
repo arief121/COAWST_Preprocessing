@@ -1,0 +1,39 @@
+Coupled Ocean – Atmosphere – Wave – Sediment Transport (COAWST) adalah model numerik yang dapat 
+menyimulasikan model numerik atmosfer(WRF)-laut(ROMS)-wave(SWAN) secara online atau coupled.
+
+Langkah2 dalam mempersiapkan file2 input yang dibutuhkan untuk simulasi model COAWST adalah sebagai berikut:
+
+1) Preprocessing data input WRF
+  a. pembuatan domain
+  b. download data GFS
+  c. run geogrid
+  d. run ungrib
+  e. run metgrid
+  f. run real
+
+2) Preprocessing data input ROMS
+  a. pembuatan domain dan grid model
+  b. pembuatan input Initial Condition dan Boundary Condition (ICBC)
+  c. pembuatan input surface forcing
+  d. pembuatan input tidal forcing
+
+3) Preprocessing data input SWAN
+  a. pembuatan domain dan grid model
+  b. pembuatan input TPAR sebagai lateral boundary condition
+
+4) Membuat file sebagai pembuatan bobot interpolasi untuk memetakan data antara grid-model yang berbeda
+menggunakan scrip_coawst (Spherical Coordinate Remapping and Interpolation Package). file ini dibutuhkan
+jika ingin menjalankan coupled model.
+
+4) Editing scrip
+  a. coawst.bash
+  b. coawst.h
+  c. coupling.in
+  d. namelist.input
+  e. roms.in
+  f. swan.in
+  e. job_coawst
+
+4) Compile coawst.bash
+
+5) Execute job_coawst menggunakan sbatch
