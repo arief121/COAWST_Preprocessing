@@ -1,1 +1,375 @@
 
+Berikut adalah langkah-langkah yang dalam pre-processing data input WRF. 
+Tulisan yang terlampir disini merupakan tulisan dari github Pak Wido Hanggoro yang saya coba tuliskan kembali.
+( https://github.com/hanggoro-litbang/training-coawst/blob/main/running/)
+
+Jika ada yang kurang jelas atau ada yang ingin ditanyakan atau menyampaikan kritik dan masukan
+bisa langsung tulis di issues :)
+
+## Happy Modeling ##
+
+Preprocessing atau persiapan data input model WRF kali ini akan dilakukan di server/Linux.
+sebelum itu, buatlah direktori/folder sebagai tempat untuk meletakkan file2 nantinya dengan susunan sebagai berikut:
+
+main directory  /  1_data
+                /  2_geogrid
+                /  3_ungrib
+                /  4_metgrid
+                /  5_wrf
+
+!! Pastikan di perangkat anda sudah terinstal WRF-4.2
+
+
+1) Pembuatan Domain Model
+
+* buka web https://jiririchter.github.io/WRFDomainWizard/, pakai tombol scroll ditahan untuk geser peta
+* pada toolbar sebelah kiri, pilih toolbar wps (kedua dari atas), pilih new
+* tentukan area yang menjadi wilayah simulasi (drag langsung di peta) minimal nilai e_we & e_sn 100x100
+* ubah nilai dx dan dy sesuai yang diinginkan (dx=dy, satuan dalam meter)
+* setiap ada nilai yang diubah, jangan lupa klik update
+* untuk menambah nesting domain, klik add nest (tombol + disebelah tulisan Grids)
+* jika sudah selesai, save, dan akan keluar namelist.wps (akan digunakan di langkah selanjutnya)
+
+2) Download data GFS
+
+download data GFS menggunakan script download_gfs0.25.sh
+pastikan script download_gfs0.25.sh sudah dicopy ke 
+main directory  /  1_data
+
+#2.1 buka file download_gfs0.25.sh
+vi download_gfs0.25.sh
+
+, sesuaikan bagian berikut:
+
+<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+# input waktu awal simulasi
+yyyy1=2023
+mm1=05
+dd1=01
+cc=00
+lengthhour=1440 # hari simulasi * 24
+step=3
+##########
+
+source=ems # gfilter khusus data forecast; nccf yang lain ada data analisisnya;
+
+########## Domain Selection for grib filter #############
+# usahakan area domain data GFS yang didownload lebih besar dari domain WRF
+ll=104   #left
+rl=116  #right
+tl=1    #top
+bl=-11  #bottom
+###########
+<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+# save (:wq!)
+
+#2.2 run download_gfs0.25.sh
+./download_gfs0.25.sh
+
+# data akan tersimpan di main directory  /  1_data  / ${yyyy1}${mm1}${dd1}${cc}
+
+3) Run geogrid
+
+#3.1 buka direktori 
+main directory  /  2_geogrid
+cd $HOME/maindirectory/2_geogrid
+
+#3.2 buat file dengan nama namelist.wps dan buka; copy kan namelist.wps dari domainwizard yang telah dibuat sebelumnya
+
+#3.3 buka file namelist.wps
+vi namelist.wps
+
+#3.4 copy isi file namelist.wps dari web domainwizard
+sesuaikan bagian berikut:
+
+<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+1 &share
+2  wrf_core = 'ARW'
+3  max_dom  = 1    # sesuai jumlah domain yang dibuat
+4  start_date= '2023-05-01_00:00:00'   # waktu awal sumulasi
+5  end_date = '2023-05-30_18:00:00'    # waktu akhir simulasi
+6  interval_seconds= 10800   # interval waktu data input GFS (3 jam)
+7  io_form_geogrid= 2   # sesuai dengan jumlah domain
+8  debug_level    = 0
+9 /
+10
+11 &geogrid
+12  parent_id= 1    
+13  parent_grid_ratio    = 1  
+14  i_parent_start = 1
+15  j_parent_start = 1
+16  e_we= 100
+17  e_sn= 100
+18  geog_data_res  = 'default'
+19  dx = 9000
+20  dy = 9000
+21  map_proj = 'mercator'
+22  ref_lat  = -5.871# domain model dari langkah sebelumnya di domainwizard
+23  ref_lon  = 110.435
+24  truelat1 = -2.420
+25  truelat2 = -2.420
+26  stand_lon= 112.062
+27  geog_data_path = '/mnt-storage1/src/GEOG'
+28  opt_geogrid_tbl_path = '$HOME/maindirectory/2_geogrid'
+29 /
+30
+31 &ungrib
+32  out_format= 'WPS'
+33  prefix   = 'FILE'
+34 /
+35
+36 &metgrid
+37  fg_name  = 'FILE'
+38  io_form_metgrid= 2
+39  opt_metgrid_tbl_path = '$HOME/maindirectory/4_metgrid'
+40 /
+<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+# save (:wq!)
+
+#3.5 Prepare necessary files
+ln -sf ${HOME}/WRF/WPS-4.2/geogrid/GEOGRID.TBL.ARW ./GEOGRID.TBL
+ln -sf ${HOME}/WRF/WPS-4.2/geogrid/geogrid.exe .
+
+#3.6 run geogrid
+./geogrid.exe
+
+#3.7 create .ncviewrc
+cd ${HOME}
+vi .ncviewrc
+sesuaikan bagian berikut:
+
+<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+-1 "STRINGLIST_SAVE_FILE_VERSION" INT 1
+0 "NCVIEW_STATE_FILE_VERSION" INT 1
+1 "CMAP_3gauss" INT 1
+2 "CMAP_detail" INT 1
+3 "CMAP_ssec" INT 1
+4 "CMAP_bright" INT 1
+5 "CMAP_banded" INT 1
+6 "CMAP_rainbow" INT 1
+7 "CMAP_jaisnb" INT 1
+8 "CMAP_jaisnc" INT 1
+9 "CMAP_jaisnd" INT 1
+10 "CMAP_blu_red" INT 1
+11 "CMAP_manga" INT 1
+12 "CMAP_jet" INT 1
+13 "CMAP_wheel" INT 1
+14 "CMAP_3saw" INT 1
+15 "CMAP_bw" INT 1
+16 "CMAP_default" INT 1
+17 "CMAP_extrema" INT 1
+18 "CMAP_helix" INT 1
+19 "CMAP_helix2" INT 1
+20 "CMAP_hotres" INT 1
+<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+# save (:wq!)
+
+
+4) Run ungrib
+
+#4.1 buka direktori 
+main directory  /  3_ungrib
+cd $HOME/maindirectory/3_ungrib
+
+#4.2 Copy namelist.wps dari folder 2_geogrid
+cp ../2_geogrid/namelist.wps .
+
+#4.3 Copy necessary file
+ln -sf ${HOME}/WRF/WPS-4.2/ungrib/Variable_Tables/Vtable.GFS ./Vtable
+ln -sf ${HOME}/WRF/WPS-4.2/link_grib.csh .
+ln -sf ${HOME}/WRF/WPS-4.2/ungrib.exe
+
+#4.4 Run link_grib.csh 
+./link_grib.csh $HOME/maindirectory/1_data/${yyyy1}${mm1}${dd1}${cc}/gfs.t12z.pgrb2.0p25.f* 
+
+#4.4 Run ungrib.exe 
+./ungrib.exe
+
+
+5) Run metgrid
+
+#5.1 buka direktori 
+main directory  /  4_metgrid
+cd $HOME/maindirectory/4_metgrid
+
+#5.2 Copy namelist dari 3_ungrib
+cp $HOME/maindirectory/3_ungrib/namelist.wps .
+
+#5.3 Copy necessary file
+cp ../2_geogrid/geo_em* .
+ln -sf ${HOME}/WRF/WPS-4.2/metgrid/METGRID.TBL .
+ln -sf ../3_ungrib/FILE* .
+ln -sf ${HOME}/WRF/WPS-4.2/metgrid.exe
+
+#5.4 Run metgrid.exe
+./metgrid.exe
+
+
+6) Run real
+
+#6.1 buka direktori 
+main directory  /  5_wrf
+cd $HOME/maindirectory/5_wrf
+
+#6.2 Copy namelist
+cp ${HOME}/WRF/WRF-4.2/run/namelist.input .
+
+#6.3 Copy necessary file
+cp ${HOME}/maindirectory/2_geogrid/geo_em* .
+ln -sf ${HOME}/maindirectory/4_metgrid/met_em* .
+ln -sf ${HOME}/WRF/WRF-4.2/run/real.exe .
+cp ${HOME}/WRF/WRF-4.2/run/namelist.input .
+
+#6.4 edit namelist.input
+
+vi namelist.input
+#sesuaikan dengan keterangan berikut
+
+<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+ 1  &time_control
+ 2  run_days   = 0,
+ 3  run_hours  = 0,
+ 4  run_minutes= 0,
+ 5  run_seconds= 0,
+ 6  start_year = 2023, 2023,
+ 7  start_month= 09,   09,
+ 8  start_day  = 09,   09,
+ 9  start_hour = 12,   12,
+10  end_year   = 2023, 2023,
+11  end_month  = 09,   09,
+12  end_day    = 11,   11,
+13  end_hour   = 12,   12,
+14  interval_seconds= 10800
+15  input_from_file = .true.,.true.,
+16  history_interval= 180,  60,
+17  frames_per_outfile   = 1000, 1000,
+18  restart    = .false.,
+19  restart_interval= 7200,
+20  io_form_history = 2
+21  io_form_restart = 2
+22  io_form_input   = 2
+23  io_form_boundary= 2
+24  /
+25
+26  &domains
+27  time_step  = 54,
+28  time_step_fract_num  = 0,
+29  time_step_fract_den  = 1,
+30  max_dom    = 2,
+31  e_we  = 100,    151,
+32  e_sn  = 100,    151,
+33  e_vert= 33,    33,
+34  p_top_requested = 5000,
+35  num_metgrid_levels   = 34,
+36  num_metgrid_soil_levels   = 4,
+37  dx    = 9000,
+38  dy    = 9000,
+39  grid_id    = 1,2,
+40  parent_id  = 0,1,
+41  i_parent_start  = 1,25,
+42  j_parent_start  = 1,27,
+43  parent_grid_ratio    = 1,3,
+44  parent_time_step_ratio    = 1,3,
+45  feedback   = 1,
+46  smooth_option   = 0
+47  /
+48
+49  &physics
+50  physics_suite   = 'CONUS'
+51  mp_physics = -1,    -1,    -1,
+52  cu_physics = -1,    -1,0,
+53  ra_lw_physics   = -1,    -1,    -1,
+54  ra_sw_physics   = -1,    -1,    -1,
+55  bl_pbl_physics  = -1,    -1,    -1,
+56  sf_sfclay_physics    = -1,    -1,    -1,
+57  sf_surface_physics   = -1,    -1,    -1,
+58  radt  = 30,    30,    30,
+59  bldt  = 0,0, 0,
+60  cudt  = 5,5, 5,
+61  icloud= 1,
+62  num_land_cat    = 21,
+63  sf_urban_physics= 0,0, 0,
+64  /
+65
+66  &fdda
+67  /
+68
+69  &dynamics
+70  hybrid_opt = 2,
+71  w_damping  = 0,
+72  diff_opt   = 1, 1, 1,
+73  km_opt= 4, 4, 4,
+74  diff_6th_opt    = 0, 0, 0,
+75  diff_6th_factor = 0.12,   0.12,   0.12,
+76  base_temp  = 290.
+77  damp_opt   = 3,
+78  zdamp = 5000.,  5000.,  5000.,
+79  dampcoef   = 0.2,    0.2,  0.2
+80  khdif = 0, 0,0,
+81  kvdif = 0, 0,0,
+82  non_hydrostatic = .true., .true., .true.,
+83  moist_adv_opt   = 1, 1,1,
+84  scalar_adv_opt  = 1, 1,1,
+85  gwd_opt    = 1, 1,0,
+86  /
+87
+88  &bdy_control
+89  spec_bdy_width  = 5,
+90  specified  = .true.
+91  /
+92
+93  &grib2
+94  /
+95
+96  &namelist_quilt
+97  nio_tasks_per_group = 0,
+98  nio_groups = 1,
+99  /
+<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+# save (:wq!)
+
+#6.5 run real.exe
+# buat dan buka file baru bernama job.mpi
+
+vi job.mpi
+#cpy dan sesuaikan line berikut
+
+<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+ 1 #!/bin/bash
+ 2
+ 3 #SBATCH -J test# Job name
+ 4 #SBATCH -o log_real.out  # Name of stdout output file (%j expands to jobId)
+ 5 #SBATCH -N 1   # Total number of nodes requested
+ 6 #SBATCH -n 10  # Total number of mpi tasks requested
+ 7 #SBATCH -t 01:30:00 # Run time (hh:mm:ss) - 1.5 hours
+ 8
+ 9 # Launch MPI-based executable
+10
+11 mpirun ./real.exe
+<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+# save (:wq!)
+
+#submit job
+sbatch job.mpi
+
+# hasil dari ./real.exe
+84K -rw-rw-r--. 1 coawst coawst  84K Jan 16 14:17 namelist.output
+ 86M -rw-rw-r--. 1 coawst coawst  86M Jan 16 14:17 wrfinput_d01
+948M -rw-rw-r--. 1 coawst coawst 948M Jan 16 14:21 wrfbdy_d01
+ 44M -rw-rw-r--. 1 coawst coawst  44M Jan 16 14:21 wrflowinp_d01
+
+
+
+
+
+
+
+
+
+
+
+
+
+
